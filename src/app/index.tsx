@@ -18,7 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from '../components/Home';
 import Reports from '../components/Reports';
 
@@ -143,7 +143,7 @@ export default function App() {
           {['Home', 'Reports', 'Contact Us'].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton onClick={() => {
-                navigate(text); handleDrawerClose();}}>
+                navigate(`/genAI-testing-system/${text}`); handleDrawerClose();}}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -157,10 +157,13 @@ export default function App() {
       <Main open={open}>
         <DrawerHeader />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="home" element={<Home />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="*" element={<Home />} />
+          <Route path="/" element={<Navigate to="/genAI-testing-system" />} />
+          <Route path="/genAI-testing-system">
+            <Route index element={<Home />} />
+            <Route path="home" element={<Home />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="*" element={<Home />} />
+          </Route>
         </Routes>
       </Main>
     </Box>
