@@ -1,7 +1,7 @@
 {
-  "name": "react-mui-ts-template",
+  "name": "genAI-testing-system",
   "version": "0.1.0",
-  "description": "React, MUI and TypeScript template",
+  "description": "Context Aware Gen AI testing system",
   "private": false,
   "homepage": "https://EshwaraSrinivas.github.io/genAI-testing-system",
   "keywords": [
