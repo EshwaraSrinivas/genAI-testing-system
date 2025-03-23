@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Container, CircularProgress } from "@mui/material";
+import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Container, CircularProgress, Checkbox, FormControlLabel, FormGroup, Typography } from "@mui/material";
 import Results from '../Results';
 import { Scenario } from '../../models/scenario';
 
@@ -48,6 +48,8 @@ const scenariosData: Scenario[] = [
   },
 ];
 
+const options = ["Github", "Splunk", "Jira", "Confluence", "Database"];
+
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -55,7 +57,7 @@ const Home: React.FC = () => {
   const [formData, setFormData] = useState({
     dropdown1: "",
     dropdown2: "",
-    inputText: "",
+    selectedOptions: [] as string[],
   });
 
   const handleChange = (e: any) => {
@@ -63,10 +65,22 @@ const Home: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name as string]: value }));
   };
 
+  // Handle checkbox change
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      selectedOptions: prev.selectedOptions.includes(name)
+        ? prev.selectedOptions.filter((item) => item !== name) // Remove if unchecked
+        : [...prev.selectedOptions, name], // Add if checked
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setScenarios([]);
+    console.log(formData);
     try {
       const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
         method: "POST",
@@ -84,13 +98,13 @@ const Home: React.FC = () => {
 
   return (
     <Container>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ mt: 4 }}>
         <form onSubmit={handleSubmit}>
           <FormControl fullWidth>
             <InputLabel>Select AppID</InputLabel>
             <Select name="dropdown1" value={formData.dropdown1} onChange={handleChange} label="Select AppID">
-              <MenuItem value="option1">CA10001</MenuItem>
-              <MenuItem value="option2">CA10002</MenuItem>
+              <MenuItem value="option1">MOS</MenuItem>
+              <MenuItem value="option2">CRMMS</MenuItem>
             </Select>
           </FormControl>
 
@@ -102,22 +116,35 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
 
-          <TextField
-            fullWidth
-            label="Github url"
-            name="inputText"
-            value={formData.inputText}
-            onChange={handleChange}
-            margin="normal"
-          />
+          <Typography variant="h6" gutterBottom>
+            Select Tools:
+          </Typography>
+
+          <FormControl component="fieldset">
+            <FormGroup row={true}>
+              {options.map((option) => (
+                <FormControlLabel
+                  key={option}
+                  control={
+                    <Checkbox
+                      checked={formData.selectedOptions.includes(option)}
+                      onChange={handleCheckboxChange}
+                      name={option}
+                    />
+                  }
+                  label={option}
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
 
           <Button
             type="submit"
             variant="contained"
-            fullWidth sx={{ backgroundColor: "#d71e28" }}
+            fullWidth sx={{ backgroundColor: "#d71e28", mt: 2, mb: 2 }}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Generate"}
+            {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Generate Test Cases"}
           </Button>
         </form>
       </Container>

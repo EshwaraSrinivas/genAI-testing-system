@@ -157,7 +157,8 @@ export default function App() {
       <Main open={open}>
         <DrawerHeader />
         <Routes>
-          <Route path="/">
+          <Route path="/" element={<Navigate to="/genAI-testing-system" />} />
+          <Route path="/genAI-testing-system">
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
             <Route path="reports" element={<Reports />} />
