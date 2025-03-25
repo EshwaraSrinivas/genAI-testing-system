@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Box, Typography, Accordion, AccordionSummary, AccordionDetails, List, ListItem } from "@mui/material";
+import { Tabs, Tab, Box, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Scenario } from '../../models/scenario';
+import { ProcessStep } from '../../models/scenario';
 
 interface Props {
-  scenarios: Scenario[];
+  scenarios: ProcessStep[];
 }
 
 const Results: React.FC<Props> = ({ scenarios }) => {
@@ -19,24 +19,15 @@ const Results: React.FC<Props> = ({ scenarios }) => {
       <Box sx={{ mt: 2 }}>
         {tabIndex === 0 && (
           <Box>
-            {scenarios.map((item, index) => (
+            {scenarios.map((step, index) => (
               <Accordion key={index}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant="h6">{item.feature}</Typography>
+                  <Typography variant="h6">Scenario {index + 1}: {step.Scenario}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  {item.scenarios.map((scenario, i) => (
-                    <Box key={i} sx={{ mb: 2 }}>
-                      <Typography variant="subtitle1" fontWeight="bold">
-                        {scenario.title}
-                      </Typography>
-                      <List>
-                        {scenario.steps.map((step, j) => (
-                          <ListItem key={j}>{step}</ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  ))}
+                  <Typography><strong>Given:</strong> {step.Given}</Typography>
+                  <Typography><strong>When:</strong> {step.When}</Typography>
+                  <Typography><strong>Then:</strong> {step.Then}</Typography>
                 </AccordionDetails>
               </Accordion>
             ))}

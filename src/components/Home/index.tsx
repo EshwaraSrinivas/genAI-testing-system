@@ -1,59 +1,14 @@
 import React, { useState } from "react";
-import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Container, CircularProgress, Checkbox, FormControlLabel, FormGroup, Typography } from "@mui/material";
+import { Button, MenuItem, Select, FormControl, InputLabel, Container, CircularProgress, Checkbox, FormControlLabel, FormGroup, Typography } from "@mui/material";
 import Results from '../Results';
-import { Scenario } from '../../models/scenario';
-
-const scenariosData: Scenario[] = [
-  {
-    feature: "Customer Onboarding",
-    scenarios: [
-      {
-        title: "Successfully create a new customer",
-        steps: [
-          "Given a valid customer object",
-          "When the create customer endpoint is called",
-          "Then the customer should be saved in the database with a unique ID",
-        ],
-      },
-      {
-        title: "Attempt to create a customer with missing required fields",
-        steps: [
-          "Given a customer object with missing required fields",
-          "When the create customer endpoint is called",
-          "Then an error should be thrown stating the missing fields",
-        ],
-      },
-    ],
-  },
-  {
-    feature: "User Authentication",
-    scenarios: [
-      {
-        title: "Login with valid credentials",
-        steps: [
-          "Given a registered user",
-          "When they enter valid credentials",
-          "Then they should be logged in successfully",
-        ],
-      },
-      {
-        title: "Attempt login with incorrect password",
-        steps: [
-          "Given a registered user",
-          "When they enter an incorrect password",
-          "Then they should receive an error message",
-        ],
-      },
-    ],
-  },
-];
+import { ProcessRepo, ProcessStep } from '../../models/scenario';
 
 const options = ["Github", "Splunk", "Jira", "Confluence", "Database"];
 
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [scenarios, setScenarios] = useState<ProcessStep[]>([]);
   const [formData, setFormData] = useState({
     dropdown1: "",
     dropdown2: "",
@@ -82,14 +37,15 @@ const Home: React.FC = () => {
     setScenarios([]);
     console.log(formData);
     try {
-      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      const response = await fetch("http://localhost:8000/process_repoandgenerate_testcases", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          "text": "https://github.com/ram541619/CustomerOnboardFlow.git",
+        }),
       });
-      const data = await response.json();
-      console.log("Response:", data);
-      setScenarios(scenariosData);
+      const data: ProcessRepo = await response.json();
+      setScenarios(data.process_repo);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -142,7 +98,7 @@ const Home: React.FC = () => {
             type="submit"
             variant="contained"
             fullWidth sx={{ backgroundColor: "#d71e28", mt: 2, mb: 2 }}
-            disabled={loading}
+            disabled={loading || !formData.dropdown1 || !formData.dropdown2}
           >
             {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Generate Test Cases"}
           </Button>
